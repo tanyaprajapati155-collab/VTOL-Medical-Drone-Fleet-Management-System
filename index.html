@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedDrone Operations Center</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="login-form-wrapper">
+            <div class="login-header">
+                <div class="logo-container">
+                    <i data-lucide="drone" class="logo-icon"></i>
+                    <h1>MedDrone OPS</h1>
+                </div>
+                <p class="login-subtitle">Secure Medical Drone Operations Center</p>
+            </div>
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full-width">Sign In</button>
+                <div id="login-error" class="login-error hidden"></div>
+            </form>
+            <div class="demo-credentials">
+                <h4>Demo Credentials:</h4>
+                <p><strong>Admin:</strong> admin / admin123</p>
+                <p><strong>Fleet Manager:</strong> fleet_mgr / fleet123</p>
+                <p><strong>Medical Coordinator:</strong> medical / medical123</p>
+                <p><strong>Observer:</strong> demo / demo123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app" class="main-app hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-container">
+                        <i data-lucide="drone" class="logo-icon"></i>
+                        <span class="app-title">MedDrone Operations</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span id="user-name" class="user-name">User Name</span>
+                        <span id="user-role" class="user-role">Role</span>
+                    </div>
+                    <button id="logout-btn" class="btn btn--outline btn--sm">
+                        <i data-lucide="log-out"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="sidebar">
+            <div class="nav-menu">
+                <button class="nav-item active" data-page="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    Dashboard
+                </button>
+                <button class="nav-item" data-page="fleet">
+                    <i data-lucide="drone"></i>
+                    Fleet Management
+                </button>
+                <button class="nav-item" data-page="analytics">
+                    <i data-lucide="bar-chart-3"></i>
+                    Analytics
+                </button>
+                <button class="nav-item" data-page="inventory">
+                    <i data-lucide="package"></i>
+                    Medical Inventory
+                </button>
+                <button class="nav-item" data-page="maintenance">
+                    <i data-lucide="wrench"></i>
+                    Maintenance
+                </button>
+                <button class="nav-item" data-page="tracking">
+                    <i data-lucide="map"></i>
+                    Flight Tracking
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page active">
+                <div class="page-header">
+                    <h1>Operations Dashboard</h1>
+                    <div class="status-indicators">
+                        <div class="status-item">
+                            <div class="status-dot status-dot--success"></div>
+                            <span>System Online</span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-dot status-dot--warning"></div>
+                            <span>2 Alerts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon">
+                            <i data-lucide="drone"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <div class="kpi-value" id="total-drones">15</div>
+                            <div class="kpi-label">Total Drones</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon">
+                            <i data-lucide="activity"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <div class="kpi-value" id="active-missions">8</div>
+                            <div class="kpi-label">Active Missions</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <div class="kpi-value" id="success-rate">94.5%</div>
+                            <div class="kpi-label">Success Rate</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon">
+                            <i data-lucide="clock"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <div class="kpi-value" id="avg-delivery">12.3 min</div>
+                            <div class="kpi-label">Avg Delivery Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Alerts Panel -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Active Alerts</h3>
+                            <button class="btn btn--sm btn--outline">View All</button>
+                        </div>
+                        <div class="alerts-list" id="alerts-list">
+                            <div class="alert-item alert-item--warning">
+                                <i data-lucide="alert-triangle"></i>
+                                <div class="alert-content">
+                                    <div class="alert-title">Low Battery Warning</div>
+                                    <div class="alert-desc">Drone LLA-002 battery at 45%</div>
+                                </div>
+                                <div class="alert-time">2 min ago</div>
+                            </div>
+                            <div class="alert-item alert-item--error">
+                                <i data-lucide="alert-circle"></i>
+                                <div class="alert-content">
+                                    <div class="alert-title">Critical Stock Level</div>
+                                    <div class="alert-desc">Emergency Medications below threshold</div>
+                                </div>
+                                <div class="alert-time">5 min ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Quick Actions</h3>
+                        </div>
+                        <div class="quick-actions">
+                            <button class="action-btn action-btn--emergency">
+                                <i data-lucide="zap"></i>
+                                Emergency Deploy
+                            </button>
+                            <button class="action-btn action-btn--mission">
+                                <i data-lucide="send"></i>
+                                New Mission
+                            </button>
+                            <button class="action-btn action-btn--inventory">
+                                <i data-lucide="package-plus"></i>
+                                Restock Alert
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Fleet Overview Chart -->
+                    <div class="dashboard-card chart-card">
+                        <div class="card-header">
+                            <h3>Fleet Status Overview</h3>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="fleet-status-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Recent Activity</h3>
+                        </div>
+                        <div class="activity-list" id="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i data-lucide="check-circle"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Mission Completed</div>
+                                    <div class="activity-desc">LLA-001 delivered medical supplies to Zone Alpha</div>
+                                    <div class="activity-time">3 minutes ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i data-lucide="play-circle"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Mission Started</div>
+                                    <div class="activity-desc">LLA-003 dispatched for emergency response</div>
+                                    <div class="activity-time">8 minutes ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i data-lucide="battery-charging"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Charging Complete</div>
+                                    <div class="activity-desc">LLA-005 battery charged to 100%</div>
+                                    <div class="activity-time">15 minutes ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fleet Management Page -->
+            <div id="fleet-page" class="page">
+                <div class="page-header">
+                    <h1>Fleet Management</h1>
+                    <div class="page-actions">
+                        <button class="btn btn--primary">
+                            <i data-lucide="plus"></i>
+                            Deploy Drone
+                        </button>
+                    </div>
+                </div>
+
+                <div class="fleet-grid" id="fleet-grid">
+                    <!-- Drone cards will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div id="analytics-page" class="page">
+                <div class="page-header">
+                    <h1>Mission Analytics</h1>
+                    <div class="page-actions">
+                        <select class="form-control" style="width: auto;">
+                            <option>Last 7 days</option>
+                            <option>Last 30 days</option>
+                            <option>Last 90 days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>Mission Success Rate</h3>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="success-rate-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>Delivery Time Trends</h3>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="delivery-time-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>Fleet Utilization</h3>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="utilization-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>Mission Distribution</h3>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="mission-distribution-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Inventory Page -->
+            <div id="inventory-page" class="page">
+                <div class="page-header">
+                    <h1>Medical Inventory</h1>
+                    <div class="page-actions">
+                        <button class="btn btn--primary">
+                            <i data-lucide="package-plus"></i>
+                            Add Supply
+                        </button>
+                    </div>
+                </div>
+
+                <div class="inventory-grid" id="inventory-grid">
+                    <!-- Inventory items will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Maintenance Page -->
+            <div id="maintenance-page" class="page">
+                <div class="page-header">
+                    <h1>Maintenance Center</h1>
+                    <div class="page-actions">
+                        <button class="btn btn--primary">
+                            <i data-lucide="calendar"></i>
+                            Schedule Service
+                        </button>
+                    </div>
+                </div>
+
+                <div class="maintenance-grid">
+                    <div class="maintenance-card">
+                        <div class="card-header">
+                            <h3>Component Health</h3>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="component-health-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="maintenance-card">
+                        <div class="card-header">
+                            <h3>Upcoming Maintenance</h3>
+                        </div>
+                        <div class="maintenance-schedule">
+                            <div class="schedule-item">
+                                <div class="schedule-drone">LLA-001</div>
+                                <div class="schedule-task">Propeller Inspection</div>
+                                <div class="schedule-date">Sept 22, 2025</div>
+                                <div class="schedule-priority priority--high">High</div>
+                            </div>
+                            <div class="schedule-item">
+                                <div class="schedule-drone">LLA-003</div>
+                                <div class="schedule-task">Battery Replacement</div>
+                                <div class="schedule-date">Sept 25, 2025</div>
+                                <div class="schedule-priority priority--medium">Medium</div>
+                            </div>
+                            <div class="schedule-item">
+                                <div class="schedule-drone">LLA-005</div>
+                                <div class="schedule-task">Navigation System Check</div>
+                                <div class="schedule-date">Sept 28, 2025</div>
+                                <div class="schedule-priority priority--low">Low</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flight Tracking Page -->
+            <div id="tracking-page" class="page">
+                <div class="page-header">
+                    <h1>Real-time Flight Tracking</h1>
+                    <div class="page-actions">
+                        <button class="btn btn--outline">
+                            <i data-lucide="refresh-cw"></i>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tracking-container">
+                    <div class="tracking-map">
+                        <div class="map-placeholder">
+                            <i data-lucide="map"></i>
+                            <p>Interactive Flight Tracking Map</p>
+                            <p class="map-note">Real-time GPS tracking would be integrated here</p>
+                        </div>
+                    </div>
+
+                    <div class="flight-info-panel">
+                        <h3>Active Flights</h3>
+                        <div class="flight-list">
+                            <div class="flight-item">
+                                <div class="flight-drone">LLA-001</div>
+                                <div class="flight-mission">Medical Delivery</div>
+                                <div class="flight-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 75%"></div>
+                                    </div>
+                                    <span>75% Complete</span>
+                                </div>
+                                <div class="flight-eta">ETA: 3 min</div>
+                            </div>
+
+                            <div class="flight-item">
+                                <div class="flight-drone">LLA-003</div>
+                                <div class="flight-mission">Emergency Response</div>
+                                <div class="flight-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 45%"></div>
+                                    </div>
+                                    <span>45% Complete</span>
+                                </div>
+                                <div class="flight-eta">ETA: 8 min</div>
+                            </div>
+
+                            <div class="flight-item">
+                                <div class="flight-drone">LLA-005</div>
+                                <div class="flight-mission">Supply Drop</div>
+                                <div class="flight-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 20%"></div>
+                                    </div>
+                                    <span>20% Complete</span>
+                                </div>
+                                <div class="flight-eta">ETA: 15 min</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
