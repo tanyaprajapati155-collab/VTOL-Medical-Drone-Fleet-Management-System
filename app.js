@@ -1,7 +1,9 @@
 // MedDrone Operations Center JavaScript
 
 // API Configuration
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:8080/api' 
+  : 'https://vtol-medical-drone-fleet-management.vercel.app/api';
 
 // Application Data - Now fetched from API
 const appData = {
@@ -19,6 +21,102 @@ const appData = {
     "success_rate": 94.5,
     "avg_delivery_time": 12.3
   }
+};
+
+// Static demo data for Vercel deployment
+const staticDemoData = {
+  drone_fleet: [
+    {
+      id: "LLA-001",
+      status: "Active",
+      battery: 87,
+      mission: "Medical Delivery",
+      location: "Zone Alpha",
+      lat: 28.6139,
+      lon: 77.2090,
+      altitude: 120,
+      speed: 65,
+      last_update: new Date()
+    },
+    {
+      id: "LLA-002",
+      status: "Charging",
+      battery: 45,
+      mission: "Standby",
+      location: "Base Station",
+      lat: 28.6140,
+      lon: 77.2091,
+      altitude: 0,
+      speed: 0,
+      last_update: new Date()
+    },
+    {
+      id: "LLA-003",
+      status: "Active",
+      battery: 92,
+      mission: "Emergency Response",
+      location: "Zone Beta",
+      lat: 28.6138,
+      lon: 77.2089,
+      altitude: 95,
+      speed: 78,
+      last_update: new Date()
+    },
+    {
+      id: "LLA-004",
+      status: "Maintenance",
+      battery: 23,
+      mission: "Standby",
+      location: "Base Station",
+      lat: 28.6141,
+      lon: 77.2092,
+      altitude: 0,
+      speed: 0,
+      last_update: new Date()
+    },
+    {
+      id: "LLA-005",
+      status: "Active",
+      battery: 78,
+      mission: "Supply Drop",
+      location: "Zone Gamma",
+      lat: 28.6137,
+      lon: 77.2088,
+      altitude: 110,
+      speed: 55,
+      last_update: new Date()
+    }
+  ],
+  medical_supplies: [
+    {
+      item_name: "Blood Pack O+",
+      current_stock: 25,
+      min_stock_level: 10,
+      unit_of_measure: "units",
+      quality_status: "Good"
+    },
+    {
+      item_name: "Emergency Medications",
+      current_stock: 8,
+      min_stock_level: 15,
+      unit_of_measure: "vials",
+      quality_status: "Warning"
+    },
+    {
+      item_name: "IV Fluids",
+      current_stock: 45,
+      min_stock_level: 20,
+      unit_of_measure: "bags",
+      quality_status: "Good"
+    },
+    {
+      item_name: "Trauma Kit",
+      current_stock: 12,
+      min_stock_level: 8,
+      unit_of_measure: "kits",
+      quality_status: "Good"
+    }
+  ]
 };
 
 // Application State
@@ -67,7 +165,9 @@ async function fetchFleetStatus() {
     return data;
   } catch (error) {
     console.error('Failed to fetch fleet status:', error);
-    return appData.drone_fleet; // Return cached data on error
+    // Use static demo data for Vercel deployment
+    appData.drone_fleet = staticDemoData.drone_fleet;
+    return staticDemoData.drone_fleet;
   }
 }
 
@@ -78,7 +178,9 @@ async function fetchMedicalSupplies() {
     return data;
   } catch (error) {
     console.error('Failed to fetch medical supplies:', error);
-    return appData.medical_supplies; // Return cached data on error
+    // Use static demo data for Vercel deployment
+    appData.medical_supplies = staticDemoData.medical_supplies;
+    return staticDemoData.medical_supplies;
   }
 }
 
@@ -541,9 +643,9 @@ async function initializeFleetManagement() {
     });
   } catch (error) {
     console.error('Failed to initialize fleet management:', error);
-    // Fallback to cached data
+    // Fallback to static demo data
     fleetGrid.innerHTML = '';
-    appData.drone_fleet.forEach(drone => {
+    staticDemoData.drone_fleet.forEach(drone => {
       const droneCard = createDroneCard(drone);
       fleetGrid.appendChild(droneCard);
     });
@@ -759,9 +861,9 @@ async function initializeInventory() {
     });
   } catch (error) {
     console.error('Failed to initialize inventory:', error);
-    // Fallback to cached data
+    // Fallback to static demo data
     inventoryGrid.innerHTML = '';
-    appData.medical_supplies.forEach(supply => {
+    staticDemoData.medical_supplies.forEach(supply => {
       const inventoryCard = createInventoryCard(supply);
       inventoryGrid.appendChild(inventoryCard);
     });
