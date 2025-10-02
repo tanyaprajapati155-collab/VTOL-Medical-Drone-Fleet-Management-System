@@ -1,6 +1,6 @@
-# VTOL Medical Drone System
+# VTOL Medical Drone Fleet Management System
 
-A comprehensive medical drone operations center with real-time fleet management, medical inventory tracking, and mission analytics.
+Autonomous medical delivery platform with real-time fleet monitoring, medical supply tracking, and mission analytics for VTOL drones. Features Streamlit dashboard, HTML interface, inventory management, GPS tracking, and maintenance scheduling.
 
 ## Features
 
