@@ -104,13 +104,14 @@ def login():
     username = data.get('username')
     password = data.get('password')
     
-    if authenticate_user(username, password):
+    success, user = authenticate_user(username, password)
+    if success:
         return jsonify({
             'success': True,
             'user': {
-                'username': username,
-                'role': 'Administrator',  # Simplified for demo
-                'full_name': f'{username.title()} User'
+                'username': user.username,
+                'role': user.role,
+                'full_name': user.full_name
             }
         })
     else:

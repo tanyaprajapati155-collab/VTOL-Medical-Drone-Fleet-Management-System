@@ -28,9 +28,12 @@ class DroneDataManager:
             # Base coordinates (Delhi area for example)
             base_lat, base_lon = 28.6139, 77.2090
 
+            # Generate status first
+            status = random.choice(['Active', 'Charging', 'Maintenance', 'Standby'])
+
             drone_fleet[drone_id] = {
                 'id': drone_id,
-                'status': random.choice(['Active', 'Charging', 'Maintenance', 'Standby']),
+                'status': status,
                 'battery': random.randint(20, 100),
                 'location': {
                     'lat': base_lat + random.uniform(-0.05, 0.05),
@@ -50,7 +53,7 @@ class DroneDataManager:
                     'max_range': 25,  # km
                     'max_payload': 5,  # kg
                     'max_speed': 80,  # km/h
-                    'current_speed': random.uniform(0, 80) if random.choice(['Active']) else 0,
+                    'current_speed': random.uniform(0, 80) if status == 'Active' else 0,
                     'flight_time_total': random.uniform(100, 800),  # hours
                     'cycles_total': random.randint(500, 2000)
                 },

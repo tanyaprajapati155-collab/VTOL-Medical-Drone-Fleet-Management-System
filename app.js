@@ -286,6 +286,8 @@ function handleLogout() {
 
 // Navigation Functions
 function showPage(pageId) {
+  console.log('showPage called with:', pageId);
+  
   // Hide all pages
   document.querySelectorAll('.page').forEach(page => {
     page.classList.remove('active');
@@ -298,14 +300,20 @@ function showPage(pageId) {
   
   // Show selected page
   const targetPage = document.getElementById(`${pageId}-page`);
+  console.log('Target page element:', targetPage);
   if (targetPage) {
     targetPage.classList.add('active');
+  } else {
+    console.error('Page not found:', `${pageId}-page`);
   }
   
   // Add active class to selected nav item
   const navItem = document.querySelector(`[data-page="${pageId}"]`);
+  console.log('Nav item element:', navItem);
   if (navItem) {
     navItem.classList.add('active');
+  } else {
+    console.error('Nav item not found for page:', pageId);
   }
   
   // Initialize page-specific content
@@ -888,10 +896,14 @@ function initializeMainApp() {
   showPage('dashboard');
   
   // Setup navigation event listeners
-  document.querySelectorAll('.nav-item').forEach(item => {
+  const navItems = document.querySelectorAll('.nav-item');
+  console.log('Found nav items:', navItems.length);
+  navItems.forEach(item => {
+    console.log('Setting up listener for:', item.getAttribute('data-page'));
     item.addEventListener('click', (e) => {
       e.preventDefault();
       const pageId = item.getAttribute('data-page');
+      console.log('Nav item clicked:', pageId);
       if (pageId) {
         showPage(pageId);
       }
@@ -911,22 +923,15 @@ function initializeMainApp() {
 
 // Main initialization function
 function initializeSystem() {
-  if (isInitialized) return;
-  
   // Initialize Lucide icons
   if (typeof lucide !== 'undefined' && lucide.createIcons) {
     lucide.createIcons();
   }
   
-  // Setup login form - ensure single event listener
+  // Setup login form
   const loginForm = document.getElementById('login-form');
   if (loginForm) {
-    // Remove any existing listeners
-    const newForm = loginForm.cloneNode(true);
-    loginForm.parentNode.replaceChild(newForm, loginForm);
-    
-    // Add fresh event listener
-    newForm.addEventListener('submit', handleLogin);
+    loginForm.addEventListener('submit', handleLogin);
   }
   
   // Setup logout button

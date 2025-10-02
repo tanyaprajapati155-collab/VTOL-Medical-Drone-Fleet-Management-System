@@ -232,6 +232,8 @@ class MedicalSupplyManager:
                 # If delivery completed, move to history and update inventory
                 if new_status == 'Delivered':
                     self._complete_delivery(delivery)
+                    # Ensure status is set before moving to history
+                    delivery['status'] = 'Delivered'
                     self.active_deliveries.remove(delivery)
                     self.delivery_history.append(delivery)
 

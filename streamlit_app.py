@@ -6,8 +6,8 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import time
 import json
-from utils.drone_data import DroneDataManager
-from utils.medical_supplies import MedicalSupplyManager
+from drone_data import DroneDataManager
+from medical_supplies import MedicalSupplyManager
 from utils.alerts import AlertManager
 from utils.authentication import authenticate_user
 import warnings
@@ -225,7 +225,8 @@ def show_login():
                 login_button = st.form_submit_button("🚀 Access Dashboard", use_container_width=True)
 
             if login_button:
-                if authenticate_user(username, password):
+                success, user = authenticate_user(username, password)
+                if success:
                     st.session_state.authenticated = True
                     st.session_state.username = username
                     st.success("✅ Authentication successful! Redirecting...")

@@ -26,7 +26,7 @@ class AlertManager:
         }
 
     def create_alert(self, alert_type: str, severity: str, title: str, message: str, 
-                    source: str = "System", metadata: Dict = None):
+                    source: str = "System", metadata: Optional[Dict] = None):
         """Create a new alert with comprehensive details"""
         alert = {
             'id': f"ALT-{len(self.active_alerts) + len(self.alert_history) + 1:06d}",
