@@ -1259,8 +1259,17 @@ select.form-control {
 /* Fleet Grid */
 .fleet-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--space-24);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-20);
+  padding: var(--space-16);
+}
+
+@media (max-width: 768px) {
+  .fleet-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-16);
+    padding: var(--space-12);
+  }
 }
 
 .drone-card {
@@ -1269,12 +1278,25 @@ select.form-control {
   border: 1px solid var(--color-card-border);
   box-shadow: var(--shadow-sm);
   padding: var(--space-20);
-  transition: transform var(--duration-fast) var(--ease-standard);
+  transition: all var(--duration-fast) var(--ease-standard);
+  position: relative;
+  overflow: hidden;
+}
+
+.drone-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-teal-500), var(--color-teal-300));
 }
 
 .drone-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-teal-400);
 }
 
 .drone-header {
@@ -1385,7 +1407,16 @@ select.form-control {
 .inventory-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-24);
+  gap: var(--space-20);
+  padding: var(--space-16);
+}
+
+@media (max-width: 768px) {
+  .inventory-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-16);
+    padding: var(--space-12);
+  }
 }
 
 .inventory-card {
@@ -1394,6 +1425,25 @@ select.form-control {
   border: 1px solid var(--color-card-border);
   box-shadow: var(--shadow-sm);
   padding: var(--space-20);
+  transition: all var(--duration-fast) var(--ease-standard);
+  position: relative;
+  overflow: hidden;
+}
+
+.inventory-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-orange-500), var(--color-orange-400));
+}
+
+.inventory-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-orange-400);
 }
 
 .inventory-header {
@@ -1722,4 +1772,49 @@ select.form-control {
 /* Utility Classes */
 .hidden {
   display: none !important;
+}
+
+/* Loading States */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--color-teal-400);
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error States */
+.error {
+  color: var(--color-red-500);
+  background: rgba(192, 21, 47, 0.1);
+  border: 1px solid var(--color-red-400);
+  border-radius: var(--radius-md);
+  padding: var(--space-12);
+  margin: var(--space-16) 0;
+}
+
+/* Success States */
+.success {
+  color: var(--color-teal-600);
+  background: rgba(33, 128, 141, 0.1);
+  border: 1px solid var(--color-teal-400);
+  border-radius: var(--radius-md);
+  padding: var(--space-12);
+  margin: var(--space-16) 0;
 }

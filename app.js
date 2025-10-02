@@ -142,7 +142,6 @@ async function apiRequest(endpoint, options = {}) {
     
     return await response.json();
   } catch (error) {
-    console.error('API request error:', error);
     throw error;
   }
 }
@@ -153,7 +152,6 @@ async function fetchKPIs() {
     appData.kpi_data = data;
     return data;
   } catch (error) {
-    console.error('Failed to fetch KPIs:', error);
     return appData.kpi_data; // Return cached data on error
   }
 }
@@ -164,7 +162,6 @@ async function fetchFleetStatus() {
     appData.drone_fleet = data;
     return data;
   } catch (error) {
-    console.error('Failed to fetch fleet status:', error);
     // Use static demo data for Vercel deployment
     appData.drone_fleet = staticDemoData.drone_fleet;
     return staticDemoData.drone_fleet;
@@ -177,7 +174,6 @@ async function fetchMedicalSupplies() {
     appData.medical_supplies = data;
     return data;
   } catch (error) {
-    console.error('Failed to fetch medical supplies:', error);
     // Use static demo data for Vercel deployment
     appData.medical_supplies = staticDemoData.medical_supplies;
     return staticDemoData.medical_supplies;
@@ -189,7 +185,6 @@ async function fetchAlerts() {
     const data = await apiRequest('/alerts');
     return data;
   } catch (error) {
-    console.error('Failed to fetch alerts:', error);
     return [];
   }
 }
@@ -199,7 +194,6 @@ async function fetchActivities() {
     const data = await apiRequest('/activities');
     return data;
   } catch (error) {
-    console.error('Failed to fetch activities:', error);
     return [];
   }
 }
@@ -302,7 +296,6 @@ async function handleLogin(event) {
     }
   } catch (error) {
     // Fallback to local authentication
-    console.log('API auth failed, trying local auth:', error);
     const user = appData.demo_users[username];
     if (!user || user.password !== password) {
       showLoginError('Invalid username or password.');
@@ -388,8 +381,6 @@ function handleLogout() {
 
 // Navigation Functions
 function showPage(pageId) {
-  console.log('showPage called with:', pageId);
-  
   // Hide all pages
   document.querySelectorAll('.page').forEach(page => {
     page.classList.remove('active');
@@ -402,20 +393,14 @@ function showPage(pageId) {
   
   // Show selected page
   const targetPage = document.getElementById(`${pageId}-page`);
-  console.log('Target page element:', targetPage);
   if (targetPage) {
     targetPage.classList.add('active');
-  } else {
-    console.error('Page not found:', `${pageId}-page`);
   }
   
   // Add active class to selected nav item
   const navItem = document.querySelector(`[data-page="${pageId}"]`);
-  console.log('Nav item element:', navItem);
   if (navItem) {
     navItem.classList.add('active');
-  } else {
-    console.error('Nav item not found for page:', pageId);
   }
   
   // Initialize page-specific content
@@ -493,7 +478,6 @@ async function initializeDashboard() {
     }, 5000);
     
   } catch (error) {
-    console.error('Failed to initialize dashboard:', error);
     // Initialize with default data if API fails
     initializeDashboardWithDefaults();
   }
@@ -591,7 +575,6 @@ async function updateDashboardData() {
     }
     
   } catch (error) {
-    console.error('Failed to update dashboard data:', error);
     // Fallback to local simulation
     updateDashboardDataLocal();
   }
@@ -631,18 +614,24 @@ async function initializeFleetManagement() {
   const fleetGrid = document.getElementById('fleet-grid');
   if (!fleetGrid) return;
   
+  // Show loading state
+  fleetGrid.innerHTML = '<div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">Loading fleet data...</div>';
+  
   try {
     // Fetch latest fleet data
     const fleetData = await fetchFleetStatus();
     
     fleetGrid.innerHTML = '';
     
-    fleetData.forEach(drone => {
-      const droneCard = createDroneCard(drone);
-      fleetGrid.appendChild(droneCard);
-    });
+    if (fleetData && fleetData.length > 0) {
+      fleetData.forEach(drone => {
+        const droneCard = createDroneCard(drone);
+        fleetGrid.appendChild(droneCard);
+      });
+    } else {
+      fleetGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--color-text-secondary);">No fleet data available</div>';
+    }
   } catch (error) {
-    console.error('Failed to initialize fleet management:', error);
     // Fallback to static demo data
     fleetGrid.innerHTML = '';
     staticDemoData.drone_fleet.forEach(drone => {
@@ -849,18 +838,24 @@ async function initializeInventory() {
   const inventoryGrid = document.getElementById('inventory-grid');
   if (!inventoryGrid) return;
   
+  // Show loading state
+  inventoryGrid.innerHTML = '<div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">Loading inventory data...</div>';
+  
   try {
     // Fetch latest medical supplies data
     const suppliesData = await fetchMedicalSupplies();
     
     inventoryGrid.innerHTML = '';
     
-    suppliesData.forEach(supply => {
-      const inventoryCard = createInventoryCard(supply);
-      inventoryGrid.appendChild(inventoryCard);
-    });
+    if (suppliesData && suppliesData.length > 0) {
+      suppliesData.forEach(supply => {
+        const inventoryCard = createInventoryCard(supply);
+        inventoryGrid.appendChild(inventoryCard);
+      });
+    } else {
+      inventoryGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--color-text-secondary);">No inventory data available</div>';
+    }
   } catch (error) {
-    console.error('Failed to initialize inventory:', error);
     // Fallback to static demo data
     inventoryGrid.innerHTML = '';
     staticDemoData.medical_supplies.forEach(supply => {
@@ -999,13 +994,10 @@ function initializeMainApp() {
   
   // Setup navigation event listeners
   const navItems = document.querySelectorAll('.nav-item');
-  console.log('Found nav items:', navItems.length);
   navItems.forEach(item => {
-    console.log('Setting up listener for:', item.getAttribute('data-page'));
     item.addEventListener('click', (e) => {
       e.preventDefault();
       const pageId = item.getAttribute('data-page');
-      console.log('Nav item clicked:', pageId);
       if (pageId) {
         showPage(pageId);
       }
